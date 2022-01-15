@@ -3,11 +3,25 @@ import { isType } from 'typescript-fsa';
 import { getAssetsAsync } from '../actions/assets';
 import { CoinMarketData } from '../services/coingecko';
 
-export type AssetsState = CoinMarketData[];
+export type AssetsState = {
+	marketData: CoinMarketData[];
+	activeAssets: string[];
+};
 
-export function assetsReducer(state: AssetsState = [], action: ReduxAction) {
+const assetsInitialState = {
+	marketData: [],
+	activeAssets: ['bitcoin', 'ethereum', 'binancecoin', 'basic-attention-token']
+};
+
+export function assetsReducer(
+	state: AssetsState = assetsInitialState,
+	action: ReduxAction
+) {
 	if (isType(action, getAssetsAsync.done)) {
-		state = action.payload.result;
+		state = {
+			activeAssets: state.activeAssets,
+			marketData: action.payload.result
+		};
 	}
 
 	return state;

@@ -1,5 +1,10 @@
 import '../styles/AddAssetButton.css';
 
 export default function AddAssetButton() {
-	return <button className="add-asset-button">Add Asset</button>;
+	const handleClick = () => alert('add asset');
+	return (
+		<button className="add-asset-button" onClick={handleClick}>
+			Add Asset
+		</button>
+	);
 }

@@ -1,48 +1,67 @@
 import Asset from './Asset';
 import '../../styles/Assets.css';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { AppState } from '../../reducers';
 import { getAssets } from '../../actions/assets';
 import { useEffect, useState } from 'react';
 import { CoinMarketData } from '../../services/coingecko';
 
 type StateProps = {
-	assets: CoinMarketData[];
-	activeAssets: string[];
+	assetMarketData: CoinMarketData[];
 };
 
 type DispatchProps = {
 	getAssets: (currency: string) => void;
 };
 
-type P = StateProps & DispatchProps;
+type OwnProps = {
+	visibleAssets: string[];
+};
+
+type P = OwnProps & StateProps & DispatchProps;
 
 function AssetList(props: P) {
 	const [assetList, setAssetList] = useState<CoinMarketData[]>([]);
-	const [btcCurrentPrice, setBtcCurrentPrice] = useState(0);
+
+	const getFilteredAssets = (assetsList: CoinMarketData[]) => {
+		return assetsList.filter((asset) => props.visibleAssets.includes(asset.id));
+	};
+
+	const getBtcValue = (value: number) => {
+		if (!assetList.length) return 0;
+		const btcAsset = assetList.find((asset) => asset.id === 'bitcoin');
+		return +(value / btcAsset?.current_price!).toFixed(8);
+	};
 
 	useEffect(() => {
-		props.getAssets('usd');
-	}, []);
-
-	useEffect(() => {
-		const btcAsset = props.assets.find((asset) => asset.id === 'bitcoin');
-		if (btcAsset) {
-			setBtcCurrentPrice(btcAsset.current_price);
+		if (!props.assetMarketData.length) {
+			props.getAssets('usd');
+			return;
 		}
-		const assetList = props.assets.filter((asset) =>
-			props.activeAssets.includes(asset.id)
-		);
-		setAssetList(assetList);
-	}, [props.assets]);
+		const newAssetsList = getFilteredAssets(props.assetMarketData);
+		if (newAssetsList.length) {
+			filteredAssetsList.forEach((asset) => {
+				console.log(
+					`${moment().format('DD/MM/YYYY hh:mm:ss')} ${asset.symbol} ${
+						asset.current_price
+					}`
+				);
+			});
+			console.log('\n');
+		}
+		setAssetList(props.assetMarketData);
+		setTimeout(() => props.getAssets('usd'), 5000);
+	}, [props.assetMarketData]);
+
+	const filteredAssetsList = getFilteredAssets(assetList);
 
 	return (
 		<div className="asset-list">
-			{assetList.map((asset) => {
+			{!assetList.length && <span>Loading data...</span>}
+			{filteredAssetsList.map((asset) => {
 				const btcValue =
-					asset.id === 'bitcoin'
-						? null
-						: +(asset.current_price / btcCurrentPrice).toFixed(8);
+					asset.id === 'bitcoin' ? null : getBtcValue(asset.current_price); //+(asset.current_price / btcCurrentPrice).toFixed(8);
 				return (
 					<Asset
 						key={asset.id}
@@ -59,9 +78,8 @@ function AssetList(props: P) {
 }
 
 export default connect<StateProps, DispatchProps, {}, AppState>(
-	(state: AppState) => ({
-		assets: state.assets,
-		activeAssets: state.ui.activeAssets
+	(state) => ({
+		assetMarketData: state.assets.marketData
 	}),
 	{
 		getAssets
