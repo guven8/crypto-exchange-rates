@@ -1,0 +1,24 @@
+.add-asset-button {
+	height: 40px;
+	margin-top: 16px;
+	background: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 22px;
+	border: 1px solid #aeb1c2;
+	box-sizing: border-box;
+	border-radius: 48px;
+	font-weight: 600;
+	font-size: 16px;
+	font-size: inherit;
+	align-self: flex-start;
+}
+
+.add-asset-button::before {
+	content: url('../icons/plusIcon.svg');
+	display: block;
+	margin-right: 9.5px;
+	width: 15px;
+	height: 15px;
+}

@@ -1,0 +1,17 @@
+.side-bar-container {
+	background: #ffffff;
+	border: 2px solid #e9e9f4;
+	box-sizing: border-box;
+	border-radius: 8px;
+	width: 97%;
+	/* max-width: 284px; */
+	height: 346px;
+	margin-top: 28px;
+}
+
+@media screen and (min-width: 870px) {
+	.side-bar-container {
+		margin-left: 24px;
+		margin-top: 0;
+	}
+}
