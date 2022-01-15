@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { AppState } from '../../reducers';
 import { getAssets } from '../../actions/assets';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { CoinMarketData } from '../../services/coingecko';
 
 type DispatchProps = {
@@ -20,19 +20,15 @@ type OwnProps = {
 type P = OwnProps & DispatchProps;
 
 function AssetList(props: P) {
-	const [assetList, setAssetList] = useState<CoinMarketData[]>([]);
+	const filterByActiveAssets = (asset: CoinMarketData) =>
+		props.activeAssets.includes(asset.id);
 
-	const getFilteredAssets = (assetsList: CoinMarketData[]) => {
-		return assetsList.filter(
-			(asset) =>
-				props.activeAssets.includes(asset.id) &&
-				asset.name.toLowerCase().includes(props.searchQuery.toLowerCase())
-		);
-	};
+	const filterBySearchQuery = (asset: CoinMarketData) =>
+		asset.name.toLowerCase().includes(props.searchQuery.toLowerCase());
 
 	const getBtcValue = (value: number) => {
-		if (!assetList.length) return 0;
-		const btcAsset = assetList.find((asset) => asset.id === 'bitcoin');
+		if (!props.assetList.length) return 0;
+		const btcAsset = props.assetList.find((asset) => asset.id === 'bitcoin');
 		return +(value / btcAsset?.current_price!).toFixed(8);
 	};
 
@@ -41,9 +37,9 @@ function AssetList(props: P) {
 			props.getAssets('usd');
 			return;
 		}
-		const newAssetsList = getFilteredAssets(props.assetList);
-		if (newAssetsList.length) {
-			filteredAssetsList.forEach((asset) => {
+		const assetData = props.assetList.filter(filterByActiveAssets);
+		if (assetData.length) {
+			assetData.forEach((asset) => {
 				console.log(
 					`${moment().format('DD/MM/YYYY hh:mm:ss')} ${asset.symbol} ${
 						asset.current_price
@@ -52,15 +48,16 @@ function AssetList(props: P) {
 			});
 			console.log('\n');
 		}
-		setAssetList(props.assetList);
 		setTimeout(() => props.getAssets('usd'), 5000);
 	}, [props.assetList]);
 
-	const filteredAssetsList = getFilteredAssets(assetList);
+	const filteredAssetsList = props.assetList
+		.filter(filterByActiveAssets)
+		.filter(filterBySearchQuery);
 
 	return (
 		<div className="asset-list">
-			{!assetList.length && <span>Loading data...</span>}
+			{!props.assetList.length && <span>Loading data...</span>}
 			{filteredAssetsList.map((asset) => {
 				const btcValue =
 					asset.id === 'bitcoin' ? null : getBtcValue(asset.current_price); //+(asset.current_price / btcCurrentPrice).toFixed(8);
