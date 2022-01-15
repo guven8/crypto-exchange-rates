@@ -6,7 +6,7 @@ import { addActiveAsset } from '../../actions/assets';
 
 type OwnProps = {
 	assetList: CoinMarketData[];
-	visibleAssets: string[];
+	activeAssets: string[];
 	onAddAsset: () => void;
 };
 
@@ -18,7 +18,7 @@ type P = OwnProps & DispatchProps;
 
 function AddAssetSelect(props: P) {
 	const newAssetList = props.assetList.filter(
-		(asset) => !props.visibleAssets.includes(asset.id)
+		(asset) => !props.activeAssets.includes(asset.id)
 	);
 	const [newAsset, setNewAsset] = useState(newAssetList?.[0].id);
 	if (!props.assetList.length) return null;

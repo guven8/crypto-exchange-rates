@@ -13,7 +13,7 @@ type DispatchProps = {
 
 type OwnProps = {
 	assetList: CoinMarketData[];
-	visibleAssets: string[];
+	activeAssets: string[];
 	searchQuery: string;
 };
 
@@ -25,7 +25,7 @@ function AssetList(props: P) {
 	const getFilteredAssets = (assetsList: CoinMarketData[]) => {
 		return assetsList.filter(
 			(asset) =>
-				props.visibleAssets.includes(asset.id) &&
+				props.activeAssets.includes(asset.id) &&
 				asset.name.toLowerCase().includes(props.searchQuery.toLowerCase())
 		);
 	};
