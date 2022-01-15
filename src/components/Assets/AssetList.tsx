@@ -7,25 +7,27 @@ import { getAssets } from '../../actions/assets';
 import { useEffect, useState } from 'react';
 import { CoinMarketData } from '../../services/coingecko';
 
-type StateProps = {
-	assetMarketData: CoinMarketData[];
-};
-
 type DispatchProps = {
 	getAssets: (currency: string) => void;
 };
 
 type OwnProps = {
+	assetList: CoinMarketData[];
 	visibleAssets: string[];
+	searchQuery: string;
 };
 
-type P = OwnProps & StateProps & DispatchProps;
+type P = OwnProps & DispatchProps;
 
 function AssetList(props: P) {
 	const [assetList, setAssetList] = useState<CoinMarketData[]>([]);
 
 	const getFilteredAssets = (assetsList: CoinMarketData[]) => {
-		return assetsList.filter((asset) => props.visibleAssets.includes(asset.id));
+		return assetsList.filter(
+			(asset) =>
+				props.visibleAssets.includes(asset.id) &&
+				asset.name.toLowerCase().includes(props.searchQuery.toLowerCase())
+		);
 	};
 
 	const getBtcValue = (value: number) => {
@@ -35,11 +37,11 @@ function AssetList(props: P) {
 	};
 
 	useEffect(() => {
-		if (!props.assetMarketData.length) {
+		if (!props.assetList.length) {
 			props.getAssets('usd');
 			return;
 		}
-		const newAssetsList = getFilteredAssets(props.assetMarketData);
+		const newAssetsList = getFilteredAssets(props.assetList);
 		if (newAssetsList.length) {
 			filteredAssetsList.forEach((asset) => {
 				console.log(
@@ -50,9 +52,9 @@ function AssetList(props: P) {
 			});
 			console.log('\n');
 		}
-		setAssetList(props.assetMarketData);
+		setAssetList(props.assetList);
 		setTimeout(() => props.getAssets('usd'), 5000);
-	}, [props.assetMarketData]);
+	}, [props.assetList]);
 
 	const filteredAssetsList = getFilteredAssets(assetList);
 
@@ -77,11 +79,6 @@ function AssetList(props: P) {
 	);
 }
 
-export default connect<StateProps, DispatchProps, {}, AppState>(
-	(state) => ({
-		assetMarketData: state.assets.marketData
-	}),
-	{
-		getAssets
-	}
-)(AssetList);
+export default connect<{}, DispatchProps, {}, AppState>(null, {
+	getAssets
+})(AssetList);

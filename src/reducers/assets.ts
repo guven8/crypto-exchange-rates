@@ -1,6 +1,6 @@
 import { Action as ReduxAction } from 'redux';
 import { isType } from 'typescript-fsa';
-import { getAssetsAsync } from '../actions/assets';
+import { addActiveAssetAction, getAssetsAsync } from '../actions/assets';
 import { CoinMarketData } from '../services/coingecko';
 
 export type AssetsState = {
@@ -21,6 +21,13 @@ export function assetsReducer(
 		state = {
 			activeAssets: state.activeAssets,
 			marketData: action.payload.result
+		};
+	}
+
+	if (isType(action, addActiveAssetAction)) {
+		state = {
+			activeAssets: [...state.activeAssets, action.payload.asset],
+			marketData: state.marketData
 		};
 	}
 

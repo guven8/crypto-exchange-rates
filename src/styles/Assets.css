@@ -35,3 +35,31 @@
 	color: #868e96;
 	font-size: 12px;
 }
+
+.add-asset-container {
+	display: flex;
+	margin-top: 16px;
+	height: 36px;
+}
+
+.add-asset-select {
+	border-radius: 12px;
+	border: 1px solid #aeb1c2;
+	background: white;
+	width: 100%;
+}
+
+.add-asset-select-button {
+	margin-left: 5px;
+	border-radius: 50%;
+	border: 1px solid #aeb1c2;
+	background: white;
+	width: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.add-asset-select-button::before {
+	content: url('../icons/plusIcon.svg');
+}

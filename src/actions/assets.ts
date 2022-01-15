@@ -26,3 +26,9 @@ export function getAssets(currency: string) {
 		}
 	};
 }
+
+export const addActiveAssetAction =
+	actionCreator<{ asset: string }>('ADD_ASSET');
+export function addActiveAsset(asset: string) {
+	return addActiveAssetAction({ asset });
+}
