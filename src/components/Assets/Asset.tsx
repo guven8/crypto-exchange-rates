@@ -3,8 +3,9 @@ import '../../styles/Assets.css';
 type P = {
 	name: string;
 	image: string;
-	usdValue: number;
-	btcValue?: number;
+	value: number;
+	currencySymbol: string;
+	btcValue?: number | null;
 };
 
 export default function Asset(props: P) {
@@ -19,7 +20,8 @@ export default function Asset(props: P) {
 			</div>
 			<div className="asset-value-container">
 				<span className="asset-usd-value">
-					${numberWithCommas(props.usdValue)}
+					{props.currencySymbol}
+					{numberWithCommas(props.value)}
 				</span>
 				<span className="asset-btc-value">
 					{props.btcValue} {!!props.btcValue && 'BTC'}

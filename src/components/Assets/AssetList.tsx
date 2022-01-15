@@ -1,32 +1,69 @@
 import Asset from './Asset';
 import '../../styles/Assets.css';
+import { connect } from 'react-redux';
+import { AppState } from '../../reducers';
+import { getAssets } from '../../actions/assets';
+import { useEffect, useState } from 'react';
+import { CoinMarketData } from '../../services/coingecko';
 
-export default function AssetList() {
+type StateProps = {
+	assets: CoinMarketData[];
+	activeAssets: string[];
+};
+
+type DispatchProps = {
+	getAssets: (currency: string) => void;
+};
+
+type P = StateProps & DispatchProps;
+
+function AssetList(props: P) {
+	const [assetList, setAssetList] = useState<CoinMarketData[]>([]);
+	const [btcCurrentPrice, setBtcCurrentPrice] = useState(0);
+
+	useEffect(() => {
+		props.getAssets('usd');
+	}, []);
+
+	useEffect(() => {
+		const btcAsset = props.assets.find((asset) => asset.id === 'bitcoin');
+		if (btcAsset) {
+			setBtcCurrentPrice(btcAsset.current_price);
+		}
+		const assetList = props.assets.filter((asset) =>
+			props.activeAssets.includes(asset.id)
+		);
+		setAssetList(assetList);
+	}, [props.assets]);
+
 	return (
 		<div className="asset-list">
-			<Asset
-				name="Bitcoin"
-				image="https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579"
-				usdValue={57432.12}
-			/>
-			<Asset
-				name="Ethereum"
-				image="https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880"
-				usdValue={3455.21}
-				btcValue={0.1231}
-			/>
-			<Asset
-				name="Binance Coin"
-				image="https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png?1547034615"
-				usdValue={651.56}
-				btcValue={0.04736}
-			/>
-			<Asset
-				name="Basic Attention Token"
-				image="https://assets.coingecko.com/coins/images/677/large/basic-attention-token.png?1547034427"
-				usdValue={0.75}
-				btcValue={0.000012}
-			/>
+			{assetList.map((asset) => {
+				const btcValue =
+					asset.id === 'bitcoin'
+						? null
+						: +(asset.current_price / btcCurrentPrice).toFixed(8);
+				return (
+					<Asset
+						key={asset.id}
+						name={asset.name}
+						image={asset.image}
+						value={asset.current_price}
+						currencySymbol="$"
+						btcValue={btcValue}
+					/>
+				);
+			})}
 		</div>
 	);
 }
+
+export default connect<StateProps, DispatchProps, {}, AppState>(
+	(state: AppState) => ({
+		assets: state.assets,
+		activeAssets: state.ui.activeAssets
+	}),
+	{
+		getAssets
+	}
+)(AssetList);
