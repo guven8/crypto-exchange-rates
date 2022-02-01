@@ -24,3 +24,9 @@
 	left: 12px;
 	top: 0px;
 }
+
+@media screen and (min-width: 870px) {
+	.search-bar-input {
+		max-width: none;
+	}
+}
