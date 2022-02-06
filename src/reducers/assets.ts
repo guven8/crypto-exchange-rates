@@ -1,16 +1,24 @@
 import { Action as ReduxAction } from 'redux';
 import { isType } from 'typescript-fsa';
+import { AppState } from '.';
 import { addActiveAssetAction, getAssetsAsync } from '../actions/assets';
 import { CoinMarketData } from '../services/coingecko';
 
 export type AssetsState = {
-	marketData: CoinMarketData[];
-	activeAssets: string[];
+	requestTime: number;
+	assetList: CoinMarketData[];
+	activeAssetIds: string[];
 };
 
 const assetsInitialState = {
-	marketData: [],
-	activeAssets: ['bitcoin', 'ethereum', 'binancecoin', 'basic-attention-token']
+	requestTime: 0,
+	assetList: [],
+	activeAssetIds: [
+		'bitcoin',
+		'ethereum',
+		'binancecoin',
+		'basic-attention-token'
+	]
 };
 
 export function assetsReducer(
@@ -19,17 +27,29 @@ export function assetsReducer(
 ) {
 	if (isType(action, getAssetsAsync.done)) {
 		state = {
-			activeAssets: state.activeAssets,
-			marketData: action.payload.result
+			requestTime: Date.now(),
+			activeAssetIds: state.activeAssetIds,
+			assetList: action.payload.result
 		};
 	}
 
 	if (isType(action, addActiveAssetAction)) {
 		state = {
-			activeAssets: [...state.activeAssets, action.payload.asset],
-			marketData: state.marketData
+			requestTime: state.requestTime,
+			activeAssetIds: [...state.activeAssetIds, action.payload.asset],
+			assetList: state.assetList
 		};
 	}
 
 	return state;
 }
+
+export const getActiveAssets = (state: AppState) =>
+	state.assets.assetList.filter((asset) =>
+		state.assets.activeAssetIds.includes(asset.id)
+	);
+
+export const getNonActiveAssets = (state: AppState) =>
+	state.assets.assetList.filter(
+		(asset) => !state.assets.activeAssetIds.includes(asset.id)
+	);

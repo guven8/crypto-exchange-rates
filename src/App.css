@@ -17,3 +17,8 @@
 .asset-graph-container {
 	width: 100%;
 }
+
+.last-request {
+	position: absolute;
+	top: 10px;
+}

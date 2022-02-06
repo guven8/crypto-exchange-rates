@@ -1,13 +1,17 @@
+import { useState } from 'react';
 import '../styles/AddAssetButton.css';
+import AddAssetSelect from './Assets/AddAssetSelect';
 
-type P = {
-	onClick: () => void;
-};
+export default function AddAssetButton() {
+	const [addAssetVisible, setAddAssetVisible] = useState(false);
+	const toggleAddAssetVisible = () => setAddAssetVisible((v) => !v);
 
-export default function AddAssetButton(props: P) {
 	return (
-		<button className="add-asset-button" onClick={props.onClick}>
-			Add Asset
-		</button>
+		<>
+			{addAssetVisible && <AddAssetSelect onAddAsset={toggleAddAssetVisible} />}
+			<button className="add-asset-button" onClick={toggleAddAssetVisible}>
+				Add Asset
+			</button>
+		</>
 	);
 }

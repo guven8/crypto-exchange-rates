@@ -3,25 +3,27 @@ import { useState } from 'react';
 import { CoinMarketData } from '../../services/coingecko';
 import '../../styles/Assets.css';
 import { addActiveAsset } from '../../actions/assets';
+import { AppState } from '../../reducers';
+import { getNonActiveAssets } from '../../reducers/assets';
 
 type OwnProps = {
-	assetList: CoinMarketData[];
-	activeAssets: string[];
 	onAddAsset: () => void;
+};
+
+type StateProps = {
+	activeAssetIds: string[];
+	nonActiveAssets: CoinMarketData[];
 };
 
 type DispatchProps = {
 	addActiveAsset: (asset: string) => void;
 };
 
-type P = OwnProps & DispatchProps;
+type P = OwnProps & StateProps & DispatchProps;
 
 function AddAssetSelect(props: P) {
-	const newAssetList = props.assetList.filter(
-		(asset) => !props.activeAssets.includes(asset.id)
-	);
-	const [newAsset, setNewAsset] = useState(newAssetList?.[0].id);
-	if (!props.assetList.length) return null;
+	const [newAsset, setNewAsset] = useState(props.nonActiveAssets[0].id);
+	if (!props.nonActiveAssets.length) return null;
 
 	const handleChange = (e: any) => {
 		setNewAsset(e.target.value);
@@ -42,7 +44,7 @@ function AddAssetSelect(props: P) {
 				value={newAsset}
 				onChange={handleChange}
 			>
-				{newAssetList.map((asset) => (
+				{props.nonActiveAssets.map((asset) => (
 					<option key={asset.id} value={asset.id}>
 						{asset.name}
 					</option>
@@ -56,4 +58,10 @@ function AddAssetSelect(props: P) {
 	);
 }
 
-export default connect(null, { addActiveAsset })(AddAssetSelect);
+export default connect<StateProps, DispatchProps, {}, AppState>(
+	(state) => ({
+		activeAssetIds: state.assets.activeAssetIds,
+		nonActiveAssets: getNonActiveAssets(state)
+	}),
+	{ addActiveAsset }
+)(AddAssetSelect);
