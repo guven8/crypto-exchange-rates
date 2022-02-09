@@ -23,6 +23,11 @@
 	font-weight: 600;
 	display: flex;
 	align-items: center;
+	margin: 1px 0;
+}
+
+.nav-button:hover {
+	box-shadow: 0 0 0px 1px #a43ce4;
 }
 
 .nav-button.active {

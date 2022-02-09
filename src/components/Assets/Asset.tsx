@@ -1,17 +1,19 @@
 import { usePrevious } from '../../hooks/usePrevious';
 import '../../styles/Assets.css';
+import { numberWithCommas } from '../../utils';
 
 type P = {
+	id: string;
 	name: string;
 	image: string;
 	value: number;
 	currencySymbol: string;
 	btcValue?: number | null;
+	onAssetSelect: (assetId: string) => void;
+	selectedAsset: string;
 };
 
 export default function Asset(props: P) {
-	const numberWithCommas = (num: number) =>
-		num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 	const prevValue = usePrevious(props.value);
 
 	const differenceValue = !!prevValue
@@ -19,7 +21,12 @@ export default function Asset(props: P) {
 		: 0;
 
 	return (
-		<div className={`asset-container ${!!differenceValue ? 'updated' : ''}`}>
+		<button
+			className={`asset-container${!!differenceValue ? ' updated' : ''} ${
+				props.selectedAsset === props.id ? ' selected' : ''
+			}`}
+			onClick={() => props.onAssetSelect(props.id)}
+		>
 			<div className="asset-image-name-container">
 				<img src={props.image} className="asset-image" />
 				<span className="asset-name">{props.name}</span>
@@ -43,6 +50,6 @@ export default function Asset(props: P) {
 					{!!props.btcValue && `${props.btcValue} BTC`}
 				</span>
 			</div>
-		</div>
+		</button>
 	);
 }

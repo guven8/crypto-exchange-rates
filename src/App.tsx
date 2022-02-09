@@ -10,7 +10,6 @@ import { AppState } from './reducers';
 import { CoinMarketData } from './services/coingecko';
 import { usePrevious } from './hooks/usePrevious';
 import { getAssets } from './actions/assets';
-import moment from 'moment';
 import { getActiveAssets } from './reducers/assets';
 
 type StateProps = {
@@ -27,11 +26,12 @@ type P = StateProps & DispatchProps;
 function App(props: P) {
 	const [searchQuery, setSearchQuery] = useState('');
 	const prevRequestTime = usePrevious(props.requestTime);
-	const lastUpdated = moment(props.requestTime).format('hh:mm:ss');
+	const lastUpdated = new Date(props.requestTime).toLocaleTimeString();
 	const updateFrequency = 5000;
 	const timeoutRef = useRef<NodeJS.Timeout>();
 	const filterBySearchQuery = (asset: CoinMarketData) =>
 		asset.name.toLowerCase().includes(searchQuery.toLowerCase());
+	const [selectedAsset, setSelectedAsset] = useState<string>('bitcoin');
 
 	const logAssets = () => {
 		console.log(`\n--- ${lastUpdated} ---`);
@@ -55,6 +55,11 @@ function App(props: P) {
 
 	const filteredAssetsList = props.assetList.filter(filterBySearchQuery);
 
+	const activeAsset =
+		(props.assetList.length &&
+			props.assetList.find((asset) => asset.id === selectedAsset)) ||
+		null;
+
 	return (
 		<div className="App">
 			<span className="last-request">
@@ -63,10 +68,14 @@ function App(props: P) {
 			<NavContainer />
 			<div className="asset-graph-container">
 				<SearchBar value={searchQuery} onChange={setSearchQuery} />
-				<AssetList assetList={filteredAssetsList} />
+				<AssetList
+					assetList={filteredAssetsList}
+					onAssetSelect={setSelectedAsset}
+					selectedAsset={selectedAsset}
+				/>
 				<AddAssetButton />
 			</div>
-			<SideBar />
+			<SideBar activeAsset={activeAsset} />
 		</div>
 	);
 }

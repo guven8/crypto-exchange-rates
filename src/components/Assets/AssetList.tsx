@@ -4,6 +4,8 @@ import { CoinMarketData } from '../../services/coingecko';
 
 type P = {
 	assetList: CoinMarketData[];
+	onAssetSelect: (assetId: string) => void;
+	selectedAsset: string;
 };
 
 export default function AssetList(props: P) {
@@ -24,11 +26,14 @@ export default function AssetList(props: P) {
 				return (
 					<Asset
 						key={asset.id}
+						id={asset.id}
 						name={asset.name}
 						image={asset.image}
 						value={asset.current_price}
 						currencySymbol="$"
 						btcValue={btcValue}
+						onAssetSelect={props.onAssetSelect}
+						selectedAsset={props.selectedAsset}
 					/>
 				);
 			})}

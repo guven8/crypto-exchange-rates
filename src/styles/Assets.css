@@ -12,11 +12,18 @@
 	margin-top: 16px;
 	font-weight: 400;
 	border-radius: 12px;
+	outline: none;
+	background: white;
+	border: none;
 }
 
 .asset-container.updated {
 	color: blue;
 	box-shadow: 0px 0px 1px 1px springgreen;
+}
+
+.asset-container.selected {
+	box-shadow: 0 0 1px 1px #a43ce4;
 }
 
 .asset-image-name-container {
