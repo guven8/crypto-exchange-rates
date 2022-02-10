@@ -1,0 +1,24 @@
+.App {
+	padding: 43px 18px;
+	font-size: 13px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+@media screen and (min-width: 870px) {
+	.App {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+}
+
+.asset-graph-container {
+	width: 100%;
+}
+
+.last-request {
+	position: absolute;
+	top: 10px;
+}

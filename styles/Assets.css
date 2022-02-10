@@ -1,0 +1,104 @@
+.asset-list {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.asset-container {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	height: 40px;
+	margin-top: 16px;
+	font-weight: 400;
+	border-radius: 12px;
+	outline: none;
+	background: white;
+	border: none;
+}
+
+.asset-container.updated {
+	color: blue;
+	box-shadow: 0px 0px 1px 1px springgreen;
+}
+
+.asset-container.selected {
+	box-shadow: 0 0 1px 1px #a43ce4;
+}
+
+.asset-image-name-container {
+	display: flex;
+	align-items: center;
+	height: 100%;
+}
+
+.asset-image {
+	height: 100%;
+	margin-right: 8px;
+}
+
+.asset-value-container {
+	display: flex;
+	flex-direction: column;
+	text-align: right;
+	padding-right: 11px;
+}
+
+.asset-btc-value {
+	color: #868e96;
+	font-size: 12px;
+}
+
+.add-asset-container {
+	display: flex;
+	margin-top: 16px;
+	height: 36px;
+}
+
+.add-asset-select {
+	max-width: 200px;
+	padding: 0 10px;
+	border-radius: 12px;
+	border: 1px solid #aeb1c2;
+	background: white;
+	width: 100%;
+}
+
+.add-asset-select-button {
+	margin-left: 5px;
+	border-radius: 50%;
+	border: 1px solid #aeb1c2;
+	background: white;
+	width: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.add-asset-select-button::before {
+	content: url('../icons/plusIcon.svg');
+}
+
+.loading-text {
+	padding: 50px 0;
+	text-align: center;
+}
+
+.difference-value {
+	margin-right: 10px;
+}
+
+.difference-value.minus {
+	color: tomato;
+}
+.difference-value.minus::before {
+	content: '-';
+}
+
+.difference-value.plus {
+	color: springgreen;
+}
+
+.difference-value.plus::before {
+	content: '+';
+}
