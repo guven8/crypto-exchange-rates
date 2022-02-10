@@ -6,6 +6,23 @@ type P = {
 	activeAsset: CoinMarketData | null;
 };
 
+const TableRow = ({
+	label,
+	data,
+	dataClassName
+}: {
+	label: string;
+	data: string;
+	dataClassName?: string;
+}) => (
+	<div className="data-row">
+		<strong>{label}:</strong>
+		<div>
+			<span className={dataClassName ?? ''}>{data}</span>
+		</div>
+	</div>
+);
+
 export default function SideBar(props: P) {
 	if (!props.activeAsset) return null;
 	const {
@@ -18,76 +35,36 @@ export default function SideBar(props: P) {
 		market_cap,
 		symbol,
 		high_24h,
-		low_24h
+		low_24h,
+		last_updated
 	} = props.activeAsset;
 
 	const allTimeHighDate = new Date(ath_date).toLocaleDateString();
 	const atlDate = new Date(atl_date).toLocaleDateString();
+	const lastUpdated = new Date(last_updated).toLocaleString();
 
 	return (
 		<div className="side-bar-container">
-			<table>
-				<tbody>
-					<tr>
-						<td>
-							<strong>24h %</strong>
-						</td>
-						<td
-							className={`figure ${
-								price_change_percentage_24h < 0 ? 'negative' : 'positive'
-							}`}
-						>
-							{price_change_percentage_24h}%
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong>High 24h</strong>
-						</td>
-						<td>
-							{high_24h} {symbol}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong>Low 24h</strong>
-						</td>
-						<td>
-							{low_24h} {symbol}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong>Market Cap</strong>
-						</td>
-						<td>${numberWithCommas(market_cap)}</td>
-					</tr>
-					<tr>
-						<td>
-							<strong>Circulating supply</strong>
-						</td>
-						<td>
-							{numberWithCommas(circulating_supply)} {symbol}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong>All time high:</strong>
-						</td>
-						<td>
-							${numberWithCommas(ath)} ({allTimeHighDate})
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<strong>All time low:</strong>
-						</td>
-						<td>
-							${atl} ({atlDate})
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<TableRow
+				label="24h %"
+				data={`${price_change_percentage_24h}%`}
+				dataClassName={`figure ${
+					price_change_percentage_24h < 0 ? 'negative' : 'positive'
+				}`}
+			/>
+			<TableRow label="High 24h" data={`${high_24h} ${symbol}`} />
+			<TableRow label="Low 24h" data={`${low_24h} ${symbol}`} />
+			<TableRow label="Market Cap" data={`$${numberWithCommas(market_cap)}`} />
+			<TableRow
+				label="Circulating supply"
+				data={`$${numberWithCommas(circulating_supply)} ${symbol}`}
+			/>
+			<TableRow
+				label="All time high"
+				data={`$${numberWithCommas(ath)} on ${allTimeHighDate}`}
+			/>
+			<TableRow label="All time low" data={`$${atl} on ${atlDate}`} />
+			<TableRow label="Last updated" data={lastUpdated} />
 		</div>
 	);
 }

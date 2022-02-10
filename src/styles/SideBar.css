@@ -3,7 +3,7 @@
 	border: 2px solid #e9e9f4;
 	box-sizing: border-box;
 	border-radius: 8px;
-	width: 97%;
+	width: 40%;
 	height: 346px;
 	margin-top: 28px;
 	padding: 10px;
@@ -17,6 +17,12 @@
 
 .figure.positive {
 	color: springgreen;
+}
+
+.data-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 @media screen and (min-width: 870px) {

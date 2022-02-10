@@ -15,12 +15,15 @@ export default function AssetList(props: P) {
 		return +(value / btcAsset?.current_price!).toFixed(8);
 	};
 
+	const sortByMarketCapRank = (a: CoinMarketData, b: CoinMarketData) =>
+		a.market_cap_rank - b.market_cap_rank;
+
 	return (
 		<div className="asset-list">
 			{!props.assetList.length && (
 				<span className="loading-text">Loading data...</span>
 			)}
-			{props.assetList.sort().map((asset) => {
+			{props.assetList.sort(sortByMarketCapRank).map((asset) => {
 				const btcValue =
 					asset.id === 'bitcoin' ? null : getBtcValue(asset.current_price);
 				return (

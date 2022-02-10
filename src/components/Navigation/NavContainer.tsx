@@ -11,7 +11,7 @@ export default function NavContainer() {
 			<NavButton active name="crypto" icon={cryptoIcon} />
 			<NavButton name="rewards" icon={batIcon} />
 			<NavButton name="cards" icon={cardIcon} />
-			<div className="divider"></div>
+			<div className="divider" />
 			<NavButton name="add exchange" icon={exchangeIcon} />
 		</div>
 	);
